@@ -12,29 +12,61 @@ int main() {
 	string line;
 	string word;
 	string answer;
-	bool firstFound = false;
+	int spaceIndex = 0;
 	bool spaceFound = false;
+	bool firstFound = false;
+	bool initialWord = true;
 	string textWord;
 	statements.open("statements.txt", ios::in);
 	while (getline(statements, line)) {
-		answer = "";
 		text.open("the_truman_show_script.txt", ios::in);
+		firstFound = false;
+		spaceFound = false;
+		answer = "";
 
 		cout << line << endl << endl;
 		stringstream l(line);
 
 		while (l >> word) {
 
+			for (int i = 0; i < word.length(); i++) {
+				if (word[i] == '_') {
+					spaceIndex = i;
+					spaceFound = true;
+					break;
+				}
+			}
+
 			if (firstFound == false) {
 				while (text >> textWord) {
-					if (word != textWord) {
-						continue;
+
+					if (spaceFound == true) {
+						//Ilk kelimemiz bosluk ise ->
 					}
-					else {
-						firstFound = true;
-						//text >> textWord;
-						break;
+					else { //word = Truman textWord = THE  //word = God, textWord = ...God,
+						if (word != textWord) {  //word.length() < textWord.length()
+							if (word.length() < textWord.length()) {
+								firstFound = true;
+								for (int i = 1; i <= word.length(); i++) {
+									if (textWord[textWord.length() - i] != word[word.length() - i]) {
+										firstFound = false;
+										break;
+									}
+								}
+								if (firstFound == false) {
+									continue;
+								}
+								else {
+									break;
+								}
+							}
+						}
+						else {
+							firstFound = true;
+							break;
+						}
 					}
+
 				}
 				if (firstFound == false) {
 					cout << "Statement NOT found." << endl;
@@ -43,45 +75,36 @@ int main() {
 			}
 			else {
 				text >> textWord;
-				int counter = 0 ;//Kelimemizin ilk boşluğunun indexini tutan değişken değer
-				for (int i = 0; i < word.length(); i++) {
-					if (word[i] == '_') {
-						counter = i;
-						spaceFound = true;
-						break;
-					}
-				}
-				if (spaceFound) {
+				if (spaceFound == true) {
 					if (word == "___") {
 						answer = textWord;
-						cout << answer << endl;
+						cout << "The answer is : " << answer << endl;
 					}
-					else if (counter == 0) {
+					else if (spaceIndex == 0) {
 						//word = ___!...he's textWord=Marilyn!...he's
 						int k = word.length() - 3;
 						for (int i = 0; i < textWord.length() - k; i++) {
 							answer += textWord[i];
 						}
-						cout << answer << endl;
+						cout << "The answer is : " << answer << endl;
 					}
-					else if (counter + 3 == textWord.length()) {
-						for (int i = counter; i < textWord.length(); i++) {
+					else if (spaceIndex + 3 == textWord.length()) {
+						for (int i = spaceIndex; i < textWord.length(); i++) {
 							answer += textWord[i];
 						}
-						cout << answer << endl;
+						cout << "The answer is : " << answer << endl;
 					}
 					else {
-						string temp = "";
-						for (int i = counter; i < textWord.length(); i++) {
+						string temp;
+						for (int i = spaceIndex; i < textWord.length(); i++) {
 							temp += textWord[i];
 						}
-						int k = word.length() - 3 - counter;
+						int k = word.length() - 3 - spaceIndex;
 						for (int i = 0; i < temp.length() - k; i++) {
 							answer += temp[i];
 						}
-						cout << answer << endl;
+						cout << "The answer is : " << answer << endl;
 					}
-					spaceFound = false;
 					break;
 				}
 				else if (word == textWord) {
