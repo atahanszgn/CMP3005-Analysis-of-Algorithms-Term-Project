@@ -7,10 +7,9 @@ using namespace std;
 //Input files : Truman text,statements text.
 //Output : print answers,print complete sentences.
 int main() {
-	//NOT : linedan wordu dogru aktarma konusunda biraz sikinti var.
-	//NOT 2 : Butun kelimeleri kontrol etme eklendi.Ilk kelime bosluksa sikinti var hala.
-	//NOT 3 : statementtaki ilk kelime,textteki bi kelimede sondan basa dogru varsa o textteki kelimeden devam edebiliriz (word -> God textWord -> ...God,)
-	//NOT 4 : statementtaki son kelime,textteki bi kelimede bastan sona dogru varsa o textteki kelimeyi kabul edebiliriz. (word -> sight textWord -> sight.)
+
+	//NOT : Butun kelimeleri kontrol etme eklendi.Ilk kelime bosluksa sikinti var hala.
+
 	ifstream statements, text;
 	string line;
 	string word;
@@ -29,10 +28,27 @@ int main() {
 		answerFound = false;
 		answer = "";
 		cout << line << endl << endl;
+		int blanks = 0;
+		int wordCounter = 0;
+		//int counter = line.length() - 1;
+		for (int i = 0; i < line.length();i++) {
+			if (line[i] == ' ') {
+				blanks++;
+			}
+		}
+		// atahan sezgin asim bayraktar
+		//Bir for dongusu ile linedaki toplam bosluk sayisini bulup oradan kac kelime oldugunu ceksek
+		/*for (int i = counter + 1, j = 0; i < line.length(); i++, j++) {
+			if (line[i] != textWord[j]) {
+				//break;
+			}
+		}
+		*/
 		stringstream l(line);
 
 		while (l >> word) {
-
+			wordCounter++;
+			
 			for (int i = 0; i < word.length(); i++) {
 				if (word[i] == '_') {
 					spaceIndex = i;
@@ -117,11 +133,33 @@ int main() {
 				else if (word == textWord) {
 					continue;
 				}
+				else if (blanks + 1 == wordCounter) {
+					if (word.length() < textWord.length()) {
+						for (int i = 0; i < word.length(); i++) {
+							if (word[i] != textWord[i]) {
+								l.clear();
+								l.seekg(0, ios::beg);
+								firstFound = false;
+								answerFound = false;
+								wordCounter = 0;
+								break;
+							}
+						}
+					}
+					else {
+						l.clear();
+						l.seekg(0, ios::beg);
+						firstFound = false;
+						answerFound = false;
+						wordCounter = 0;
+					}
+				}
 				else {
 					l.clear();
 					l.seekg(0, ios::beg);
 					firstFound = false;
 					answerFound = false;
+					wordCounter = 0;
 				}
 			}
 			
