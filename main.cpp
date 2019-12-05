@@ -23,6 +23,7 @@ int main() {
 	bool spaceFound = false;
 	bool firstFound = false;
 	bool answerFound = false;
+	bool firstBlank = false;
 
 	string textWord;
 	statements.open("statements.txt", ios::in);
@@ -31,6 +32,7 @@ int main() {
 		firstFound = false;
 		spaceFound = false;
 		answerFound = false;
+		firstBlank = false;
 		answer = "";
 		cout << line << endl << endl;
 		int blanks = 0;
@@ -53,7 +55,6 @@ int main() {
 
 		while (l >> word) {
 			wordCounter++;
-
 			for (int i = 0; i < word.length(); i++) {
 				if (word[i] == '_') {
 					spaceIndex = i;
@@ -63,35 +64,50 @@ int main() {
 			}
 
 			if (firstFound == false) {
-				while (text >> textWord) {
 
-					if (spaceFound == true) {
+				if (firstBlank == true) {
+					answer = textWord;
+					answerFound = true;
+					firstFound = true;
+					spaceFound = false;
+				}
+				else {
 
-					}
-					else { //word = Truman textWord = THE  //word = God, textWord = ...God,
-						if (word != textWord) {  //word.length() < textWord.length()
-							if (word.length() < textWord.length()) {
-								firstFound = true;
-								for (int i = 1; i <= word.length(); i++) {
-									if (textWord[textWord.length() - i] != word[word.length() - i]) {
-										firstFound = false;
+					while (text >> textWord) {
+
+						if (spaceFound == true && firstBlank == false) {
+							answer = textWord;
+							answerFound = true;
+							firstFound = true;
+							spaceFound = false;
+							firstBlank = true;
+							break;
+						}
+						else { //word = Truman textWord = THE  //word = God, textWord = ...God,
+							if (word != textWord) {  //word.length() < textWord.length()
+								if (word.length() < textWord.length()) {
+									firstFound = true;
+									for (int i = 1; i <= word.length(); i++) {
+										if (textWord[textWord.length() - i] != word[word.length() - i]) {
+											firstFound = false;
+											break;
+										}
+									}
+									if (firstFound == false) {
+										continue;
+									}
+									else {
 										break;
 									}
 								}
-								if (firstFound == false) {
-									continue;
-								}
-								else {
-									break;
-								}
+							}
+							else {
+								firstFound = true;
+								break;
 							}
 						}
-						else {
-							firstFound = true;
-							break;
-						}
-					}
 
+					}
 				}
 				if (firstFound == false) {
 					//cout << "Statement NOT found." << endl;
@@ -100,7 +116,7 @@ int main() {
 			}
 			else {
 				text >> textWord;
-
+			
 				if (spaceFound == true) {
 					if (word == "___") {
 						answer = textWord;
