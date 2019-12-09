@@ -10,7 +10,7 @@ using namespace std;
 //Output : print answers,print complete sentences.
 int main() {
 
-	//NOT : Butun kelimeleri kontrol etme eklendi.Ilk kelime bosluksa sikinti var hala.
+	//NOT : Butun kelimeleri kontrol etme eklendi.
 
 	chrono::steady_clock sc;
 	auto start = sc.now();
